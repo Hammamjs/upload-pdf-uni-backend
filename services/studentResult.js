@@ -1,6 +1,7 @@
 import AsyncHandler from 'express-async-handler';
 import puppeteer from 'puppeteer-core';
 import { parseResult } from '../utils/parseResult.js';
+import AppError from '../utils/AppError.js';
 
 export const studentResult = AsyncHandler(async (req, res, next) => {
   const studentIdx = req.student.studentIdx;
@@ -45,7 +46,6 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
       .status(200)
       .json({ message: 'Result retrived', res: parseResult(result) });
   } catch (err) {
-    console.log(err);
-    return res.status(500);
+    return next(new AppError(400, 'Something went wrong'));
   }
 });

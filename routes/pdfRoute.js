@@ -24,10 +24,7 @@ router
   .post(
     verifyJwt,
     allowedTo(ROLES_LIST.SuperAdmin, ROLES_LIST.Admin),
-    upload.fields([
-      { name: 'file', maxCount: 1 },
-      { name: 'pdfCover', maxCount: 1 },
-    ]),
+    upload.single('file'),
     uploadFileValidation,
     uploadPDFFile
   );

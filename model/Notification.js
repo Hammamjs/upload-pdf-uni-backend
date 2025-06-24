@@ -19,7 +19,7 @@ const NotificationSchema = new Schema(
       type: String,
       required: true,
     },
-    read: {
+    isRead: {
       type: Boolean,
       default: false,
     },

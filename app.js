@@ -32,7 +32,10 @@ const __dirname = dirname(__filename);
 
 export const io = new Server(httpSvr, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5173'
+        : 'https://upload-pdf-uni-frontend-13ngme8sc-hammam-husseins-projects.vercel.app/',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -49,6 +52,7 @@ app.use(crendentials);
 app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -90,5 +94,3 @@ process.on('unhandledRejection', () => {
   }
   process.exit(1);
 });
-
-// mongoose.connection.close()

@@ -5,6 +5,9 @@ export const parseResult = (rawText) => {
   // Extract key fields
   data.name = lines.find((line) => line.startsWith('Name:'))?.split('\t')[1];
   data.gpa = lines.find((line) => line.startsWith('GPA:'))?.split('\t')[1];
+  data.remark = lines
+    .find((line) => line.startsWith('Remark:'))
+    ?.split('\t')[1];
 
   // Extract grades
   const tableStart = lines.findIndex((line) => line.startsWith('NO\t'));

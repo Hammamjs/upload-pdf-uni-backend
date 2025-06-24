@@ -22,6 +22,11 @@ const SubjectSchema = new Schema(
       type: [String],
       required: true,
     },
+
+    imgCover: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true, versionKey: false }
 );

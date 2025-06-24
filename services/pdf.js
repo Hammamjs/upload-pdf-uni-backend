@@ -1,9 +1,9 @@
 import AsyncHandler from 'express-async-handler';
 import PDF from '../model/pdf.js';
-import fs from 'fs';
+import { io } from '../app.js';
+import { unlink } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
-import { io } from '../app.js';
 
 import AppError from '../utils/AppError.js';
 import {
@@ -31,22 +31,22 @@ export const getStudentFiles = AsyncHandler(async (req, res, next) => {
   if (!student) next(new AppError(404, 'Student no longer member'));
 
   const files = await PDF.find({
-    department: student.department,
+    departments: student.department,
     semester: student.semester,
     year: student.year,
   });
 
+  console.log(files);
   res.status(200).json(files);
 });
 
-export const uploadPDFFile = AsyncHandler(async (req, res) => {
-  const { title, year, semester, department, subject } = req.body;
+export const uploadPDFFile = AsyncHandler(async (req, res, next) => {
+  const { title, year, semester, departments, subject } = req.body;
+  if (!req.file) return next(new AppError(400, 'PDF file are missing'));
 
-  if (!req.files) return res.status(200).json({ message: 'Missing files' });
+  // const fileExist = await PDF.findOne({ title });
 
-  const fileExist = await PDF.findOne({ title });
-
-  if (fileExist) return new AppError(409, 'File title is already exist');
+  // if (fileExist) return new AppError(409, 'File title is already exist');
 
   try {
     const pdf = await PDF.create({
@@ -54,11 +54,11 @@ export const uploadPDFFile = AsyncHandler(async (req, res) => {
       subject,
       year,
       semester,
-      pdfCover: req.files.pdfCover[0].path,
-      department,
+      departments,
+      size: req.file.size,
     });
 
-    const filename = req.files.file[0].originalname;
+    const filename = req.file.filename;
     const id = await uploadFileToDrive(filename);
     const result = await generatePublicUrl(id);
 
@@ -67,12 +67,6 @@ export const uploadPDFFile = AsyncHandler(async (req, res) => {
     pdf.content = result.webContentLink;
 
     await pdf.save();
-    // remove file after uploaded
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const filePath = path.resolve(__dirname, '..', 'uploads', filename);
-
-    await fs.promises.unlink(filePath);
 
     // when file uploaded notify student there's new PDF
     // get all users to notify them there is a new file uploaded
@@ -80,7 +74,7 @@ export const uploadPDFFile = AsyncHandler(async (req, res) => {
 
     const filteredStudent = students.filter(
       (student) =>
-        department.includes(student.department) &&
+        departments.includes(student.department) &&
         student.year === year &&
         student.semester === semester
     );
@@ -102,6 +96,13 @@ export const uploadPDFFile = AsyncHandler(async (req, res) => {
         studentId: student._id,
       });
     });
+
+    // remove file after uploaded
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const filePath = path.resolve(__dirname, '..', 'uploads', filename);
+
+    await unlink(filePath);
 
     res.status(201).json({ message: 'PDF uploaded', file: pdf });
   } catch (err) {

@@ -17,16 +17,19 @@ export const getSpecificSubjects = AsyncHandler(async (req, res, next) => {
 });
 
 export const createSubject = AsyncHandler(async (req, res, next) => {
-  const { semester, year, departments, subject } = req.body;
-  const isSubjectExist = await Subject.findOne({ name: subject, year });
+  const { semester, year, departments, name } = req.body;
+
+  const isSubjectExist = await Subject.findOne({ name, year });
   if (isSubjectExist)
     return next(new AppError(409, 'The subject already exist'));
   await Subject.create({
     semester,
     year,
     departments,
-    name: subject,
+    name,
+    imgCover: req.file.path,
   });
+
   res.status(201).json({ message: 'Subject created' });
 });
 

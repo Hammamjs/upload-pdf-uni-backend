@@ -9,7 +9,11 @@ export const uploadFileValidation = [
   check('semester')
     .notEmpty()
     .withMessage('File should belong to specific semester'),
-  check('department').notEmpty().withMessage('File department is required'),
+  check('departments')
+    .isArray()
+    .withMessage('Should be array of departments')
+    .notEmpty()
+    .withMessage('departments is required'),
   validationMiddelware,
 ];
 

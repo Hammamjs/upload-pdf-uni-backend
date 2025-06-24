@@ -7,6 +7,7 @@ import {
 import { verifyJwt } from '../middleware/verifyJwt.js';
 import { allowedTo } from '../config/allowedTo.js';
 import { ROLES_LIST } from '../config/ROLES_LIST.js';
+import { upload } from '../middleware/uploadFile.js';
 
 const router = Router();
 
@@ -17,7 +18,12 @@ router
     allowedTo(ROLES_LIST.Admin, ROLES_LIST.SuperAdmin),
     getAllSubjects
   )
-  .post(verifyJwt, allowedTo(ROLES_LIST.SuperAdmin), createSubject);
+  .post(
+    verifyJwt,
+    allowedTo(ROLES_LIST.SuperAdmin),
+    upload.single('imgCover'),
+    createSubject
+  );
 
 router.delete(
   '/:id',

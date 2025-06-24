@@ -3,7 +3,7 @@ import validationMiddelware from '../../middleware/validationMiddleware.js';
 
 export const regisetrValidator = [
   check('name').notEmpty().withMessage('Student name is required'),
-  check('studentIdx').notEmpty().withMessage('Student index is required'),
+  check('studentIdx').notEmpty().withMessage('Student index inpm s required'),
   check('department').notEmpty().withMessage('Student department is required'),
   check('password')
     .notEmpty()

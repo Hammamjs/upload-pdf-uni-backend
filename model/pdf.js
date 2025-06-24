@@ -12,9 +12,6 @@ const PDFSchema = new Schema(
       required: true,
       trim: true,
     },
-    pdfCover: {
-      type: String,
-    },
     year: {
       type: String,
       required: true,
@@ -25,25 +22,26 @@ const PDFSchema = new Schema(
       default: '1st',
       required: true,
     },
-    createAt: {
+    uploadedAt: {
       type: Date,
       default: Date.now(),
     },
 
-    department: {
+    departments: {
       type: [String],
       enum: [
         'Networks',
         'Computer Science',
         'Math',
-        'Statisitc',
-        'Information Techenology',
+        'Statistic',
+        'Information Technology',
       ],
       required: true,
     },
     view: String,
     content: String,
     fileId: String,
+    size: Number,
   },
   { timestamps: true, versionKey: false }
 );

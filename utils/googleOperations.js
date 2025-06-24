@@ -1,4 +1,7 @@
 import { google } from 'googleapis';
+import { createReadStream, existsSync } from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const googleAuth = () => {
   const oauth2client = new google.auth.OAuth2({
@@ -19,6 +22,19 @@ const googleAuth = () => {
 
 export const uploadFileToDrive = async (filename) => {
   const drive = googleAuth();
+  // read file befoe upload it
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const filePath = path.resolve(__dirname, '..', 'uploads', filename);
+
+  console.log(filePath);
+
+  if (!existsSync(filePath)) {
+    throw new Error(`❌ File does not exist: ${filePath}`);
+  }
+
+  console.log(createReadStream(filePath));
+
   const response = await drive.files.create({
     requestBody: {
       name: filename,
@@ -26,7 +42,7 @@ export const uploadFileToDrive = async (filename) => {
     },
     media: {
       mimeType: 'application/pdf',
-      body: `../uploads/${filename}`,
+      body: createReadStream(filePath),
     },
   });
   return response.data.id;
