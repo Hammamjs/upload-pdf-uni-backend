@@ -1,5 +1,5 @@
 import AsyncHandler from 'express-async-handler';
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer'; // ✅ updated import
 import { parseResult } from '../utils/parseResult.js';
 import AppError from '../utils/AppError.js';
 
@@ -8,14 +8,11 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
 
   try {
     const browser = await puppeteer.launch({
-      channel: 'chrome',
       headless: true,
-      timeout: 60000,
-      executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage', // Reduces memory usage
+        '--disable-dev-shm-usage',
       ],
     });
 
@@ -25,7 +22,6 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
       timeout: 0,
     });
 
-    // Fill form and submit
     await page.waitForSelector('input[name="studentID"]', {
       visible: true,
       timeout: 10000,
@@ -38,15 +34,19 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
     });
     await page.click('button[name=""]');
 
-    // Wait for result to appear (no navigation)
-    await page.waitForSelector('div#page', { visible: true, timeout: 20000 }); // Replace with actual selector
+    await page.waitForSelector('div#page', {
+      visible: true,
+      timeout: 20000,
+    });
 
     const result = await page.evaluate(() => document.body.innerText);
     await browser.close();
+
     res
       .status(200)
-      .json({ message: 'Result retrived', res: parseResult(result) });
+      .json({ message: 'Result retrieved', res: parseResult(result) });
   } catch (err) {
+    console.error('Puppeteer error:', err); // Add this for better debugging
     return next(new AppError(400, 'Something went wrong'));
   }
 });
