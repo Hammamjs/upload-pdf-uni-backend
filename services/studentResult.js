@@ -11,6 +11,7 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
       channel: 'chrome',
       headless: true,
       timeout: 60000,
+      executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
