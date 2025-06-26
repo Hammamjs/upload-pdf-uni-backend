@@ -45,7 +45,7 @@ const StudentSchema = new Schema(
         'Computer Science',
         'Math',
         'Statisitc',
-        'Information Techenology',
+        'Information Technology',
       ],
       required: true,
     },

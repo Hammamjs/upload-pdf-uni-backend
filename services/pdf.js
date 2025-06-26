@@ -51,6 +51,7 @@ export const uploadPDFFile = AsyncHandler(async (req, res, next) => {
       semester,
       departments,
       size: req.file.size,
+      uploader: req.student.id,
     });
 
     const filename = req.file.filename;
@@ -103,6 +104,20 @@ export const uploadPDFFile = AsyncHandler(async (req, res, next) => {
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
+});
+
+export const updateFile = AsyncHandler(async (req, res, next) => {
+  const { title, year, semester, departments, subject, id } = req.body;
+
+  const file = await PDF.findOneAndUpdate(
+    { _id: id },
+    { title, year, semester, departments, subject },
+    { new: true }
+  );
+
+  if (!file) return next(new AppError(404, 'File not found'));
+
+  res.status(200).json({ message: 'updated' });
 });
 
 export const deleteFile = AsyncHandler(async (req, res, next) => {

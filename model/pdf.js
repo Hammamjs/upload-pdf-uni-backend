@@ -7,6 +7,11 @@ const PDFSchema = new Schema(
       required: true,
       trim: true,
     },
+    uploader: {
+      ref: 'Student',
+      type: Schema.ObjectId,
+      required: true,
+    },
     subject: {
       type: String,
       required: true,
@@ -34,7 +39,7 @@ const PDFSchema = new Schema(
         'Computer Science',
         'Math',
         'Statistic',
-        'Information Techenology',
+        'Information Technology',
       ],
       required: true,
     },
@@ -45,5 +50,9 @@ const PDFSchema = new Schema(
   },
   { timestamps: true, versionKey: false }
 );
+
+PDFSchema.pre(/^find/, function () {
+  this.populate('uploader');
+});
 
 export default model('PDF', PDFSchema);
