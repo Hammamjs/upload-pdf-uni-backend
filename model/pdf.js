@@ -34,7 +34,7 @@ const PDFSchema = new Schema(
         'Computer Science',
         'Math',
         'Statistic',
-        'Information Technology',
+        'Information Techenology',
       ],
       required: true,
     },

@@ -23,7 +23,16 @@ const SubjectSchema = new Schema(
       required: true,
     },
 
-    imgCover: {
+    coverImage: {
+      type: String,
+      required: true,
+    },
+    description: { type: String, required: true },
+    uploadedDate: {
+      type: Date,
+      default: Date.now(),
+    },
+    code: {
       type: String,
       required: true,
     },

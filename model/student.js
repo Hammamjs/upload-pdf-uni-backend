@@ -57,6 +57,10 @@ const StudentSchema = new Schema(
     passwordResetCode: String,
     passwordResetCodeExpiry: Date,
     passwordResetIsVerified: { type: Boolean, default: false },
+    lastseen: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   { timestamps: true, versionKey: false }
 );

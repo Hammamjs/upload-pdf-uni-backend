@@ -117,18 +117,25 @@ export const studentAuth = AsyncHandler(async (req, res, next) => {
   });
 });
 
-export const updatePasswoord = AsyncHandler(async (req, res, next) => {
-  const { newPassword, email } = req.body;
+export const updatePassword = AsyncHandler(async (req, res, next) => {
+  const { newPassword, currentPassword, email } = req.body;
 
   const student = await Student.findOne({ email });
 
   if (!student) return next(new AppError(404, 'Student Email not found'));
 
+  const currentPasswordIsMatched = await student.comparePassword(
+    currentPassword
+  );
+
+  if (!currentPasswordIsMatched)
+    return next(new AppError(401, 'Current password were wrong'));
+
   student.password = newPassword;
   student.markModified('password');
   await student.save();
 
-  res.status(200).json({ message: 'Password updated' });
+  res.status(201).json({ message: 'Password updated' });
 });
 
 export const handleLogOut = AsyncHandler(async (req, res, next) => {

@@ -17,7 +17,8 @@ export const getSpecificSubjects = AsyncHandler(async (req, res, next) => {
 });
 
 export const createSubject = AsyncHandler(async (req, res, next) => {
-  const { semester, year, departments, name } = req.body;
+  const { semester, year, departments, name, coverImage, code, description } =
+    req.body;
 
   const isSubjectExist = await Subject.findOne({ name, year });
   if (isSubjectExist)
@@ -27,15 +28,38 @@ export const createSubject = AsyncHandler(async (req, res, next) => {
     year,
     departments,
     name,
-    imgCover: req.file.path,
+    coverImage,
+    code,
+    description,
   });
 
   res.status(201).json({ message: 'Subject created' });
 });
 
+export const updateSubject = AsyncHandler(async (req, res) => {
+  const {
+    semester,
+    year,
+    departments,
+    name,
+    coverImage,
+    code,
+    description,
+    id,
+  } = req.body;
+
+  await Subject.findOneAndUpdate(
+    { _id, id },
+    { semester, year, departments, name, coverImage, code, description, id },
+    { new: true }
+  );
+
+  res.status(200).json({ message: 'Subject updated' });
+});
+
 export const deleteSubject = AsyncHandler(async (req, res, next) => {
   const id = req.params.id;
   if (!id) next(new AppError(400, 'Id not provided'));
-  await Subject.findOneAndDelete({ _id: id });
+  await Subject.findOneAndDelete({ _id: id }, { new: true });
   res.status(204).json({ message: 'Subject removed' });
 });

@@ -39,9 +39,13 @@ export const updateStudent = AsyncHandler(async (req, res, next) => {
   // Exclude pass
   delete body.password;
 
-  const student = await Student.findOneAndUpdate({ email: body.email }, body, {
-    new: true,
-  });
+  const student = await Student.findOneAndUpdate(
+    { _id: req.student.id },
+    body,
+    {
+      new: true,
+    }
+  );
 
   if (!student) return next(new AppError(404, 'Student account not exist'));
 
@@ -51,8 +55,8 @@ export const updateStudent = AsyncHandler(async (req, res, next) => {
 });
 
 export const deactivateAccount = AsyncHandler(async (req, res, next) => {
-  const email = req.body.email;
-  const student = await Student.findOne({ email });
+  const id = req.body.id;
+  const student = await Student.findOne({ _id: id });
   if (!student) return next(new AppError(400, 'Student Email not exist'));
   if (student.role === ROLES_LIST.SuperAdmin)
     return next(new AppError(400, 'Super Admin delete account is denied'));
@@ -62,14 +66,17 @@ export const deactivateAccount = AsyncHandler(async (req, res, next) => {
 });
 
 export const activateAccount = AsyncHandler(async (req, res, next) => {
-  const { email } = req.body;
+  const { id } = req.body;
 
-  const student = await Student.findOne({ email });
+  const student = await Student.findByIdAndUpdate(
+    id,
+    { active: true },
+    { new: true }
+  );
+
+  console.log(student);
 
   if (!student) return next(new AppError(400, 'Student Email not exist'));
-
-  student.active = true;
-  await student.save();
   res.status(200).json({ message: 'Account is activated' });
 });
 

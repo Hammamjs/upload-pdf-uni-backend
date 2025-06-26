@@ -30,11 +30,7 @@ export const studentAuthValidator = [
 ];
 
 export const updateStudentValidator = [
-  check('email')
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Invalid email'),
+  check('currentPassword').notEmpty().withMessage('Old password required'),
   check('newPassword')
     .notEmpty()
     .withMessage('Password is required')

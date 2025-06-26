@@ -3,6 +3,7 @@ import {
   createSubject,
   deleteSubject,
   getAllSubjects,
+  updateSubject,
 } from '../services/subject.js';
 import { verifyJwt } from '../middleware/verifyJwt.js';
 import { allowedTo } from '../config/allowedTo.js';
@@ -18,17 +19,18 @@ router
     allowedTo(ROLES_LIST.Admin, ROLES_LIST.SuperAdmin),
     getAllSubjects
   )
-  .post(
+  .post(verifyJwt, allowedTo(ROLES_LIST.SuperAdmin), createSubject)
+  .patch(
     verifyJwt,
-    allowedTo(ROLES_LIST.SuperAdmin),
-    upload.single('imgCover'),
-    createSubject
-  );
+    allowedTo(ROLES_LIST.SuperAdmin, ROLES_LIST.Admin),
+    updateSubject
+  )
+  .delete();
 
 router.delete(
   '/:id',
   verifyJwt,
-  allowedTo(ROLES_LIST.SuperAdmin),
+  allowedTo(ROLES_LIST.SuperAdmin, ROLES_LIST.Admin),
   deleteSubject
 );
 

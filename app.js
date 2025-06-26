@@ -15,6 +15,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import mountRoutes from './routes/mountRoutes.js';
 import corsOptions from './config/corsOptions.js';
 import crendentials from './config/credentials.js';
+import lastseen from './middleware/lastseenMiddleware.js';
 
 // env
 config();
@@ -35,7 +36,8 @@ export const io = new Server(httpSvr, {
     origin:
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:5173'
-        : 'https://upload-pdf-uni-frontend-13ngme8sc-hammam-husseins-projects.vercel.app/',
+        : 'https://upload-pdf-uni-frontend-13ngme8sc-hammam-husseins-projects.vercel.app',
+    // https://upload-pdf-uni-frontend-13ngme8sc-hammam-husseins-projects.vercel.app/
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -56,6 +58,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(express.urlencoded({ extended: false }));
 
+app.use(lastseen);
 // Routes
 mountRoutes(app);
 

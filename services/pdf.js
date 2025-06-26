@@ -36,17 +36,12 @@ export const getStudentFiles = AsyncHandler(async (req, res, next) => {
     year: student.year,
   });
 
-  console.log(files);
   res.status(200).json(files);
 });
 
 export const uploadPDFFile = AsyncHandler(async (req, res, next) => {
   const { title, year, semester, departments, subject } = req.body;
   if (!req.file) return next(new AppError(400, 'PDF file are missing'));
-
-  // const fileExist = await PDF.findOne({ title });
-
-  // if (fileExist) return new AppError(409, 'File title is already exist');
 
   try {
     const pdf = await PDF.create({

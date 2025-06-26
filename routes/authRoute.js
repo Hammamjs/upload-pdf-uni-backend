@@ -5,7 +5,7 @@ import {
   handleLogOut,
   register,
   studentAuth,
-  updatePasswoord,
+  updatePassword,
   verifyResetCode,
 } from '../services/auth.js';
 import { verifyJwt } from '../middleware/verifyJwt.js';
@@ -34,7 +34,7 @@ router.put(
   '/update-password',
   verifyJwt,
   updateStudentValidator,
-  updatePasswoord
+  updatePassword
 );
 
 router.post('/logout', rateLimit, verifyJwt, handleLogOut);
