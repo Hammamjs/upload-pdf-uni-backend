@@ -36,7 +36,7 @@ export const io = new Server(httpSvr, {
     origin:
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:5173'
-        : 'https://upload-pdf-uni-frontend-13ngme8sc-hammam-husseins-projects.vercel.app',
+        : 'https://upload-pdf-uni-frontend-p9stlwcj6-hammam-husseins-projects.vercel.app',
     // https://upload-pdf-uni-frontend-13ngme8sc-hammam-husseins-projects.vercel.app/
     methods: ['GET', 'POST'],
     credentials: true,
