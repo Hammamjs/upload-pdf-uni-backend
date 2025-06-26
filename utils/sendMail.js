@@ -20,7 +20,7 @@ export const sendEmail = async (options) => {
     <h3>Hi, ${options.name}</h3>
 
     <p>We recived request to reset your password</p>
-    <p>This code is valid for <span style='color: red;'>10 minutes</span></p>
+    <p>This code is valid for <span style='color: red;'>15 minutes</span></p>
     <p style='font-size:24px;background: #f3f3f3f3;padding: 10px;border-radius: 5px;display:block;'>
     verification code
     </p>

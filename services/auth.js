@@ -167,7 +167,7 @@ export const forgotPassword = AsyncHandler(async (req, res, next) => {
   const hashedResetCode = createHash('sha256').update(resetCode).digest('hex');
 
   student.passwordResetCode = hashedResetCode;
-  student.passwordResetCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+  student.passwordResetCodeExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 min
   await student.save();
   const options = {
     name: student.name,
