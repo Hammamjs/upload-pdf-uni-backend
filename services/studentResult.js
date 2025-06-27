@@ -1,5 +1,5 @@
 import AsyncHandler from 'express-async-handler';
-import puppeteer from 'puppeteer'; // ✅ updated import
+import puppeteer, { executablePath } from 'puppeteer'; // ✅ updated import
 import { parseResult } from '../utils/parseResult.js';
 import AppError from '../utils/AppError.js';
 
@@ -9,6 +9,7 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
+      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
