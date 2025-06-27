@@ -8,6 +8,7 @@
     "node": "22.x"
   },
   "scripts": {
+    "postinstall": "puppeteer install",
     "build": "node app",
     "dev": "node --watch app"
   },
