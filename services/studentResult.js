@@ -1,5 +1,5 @@
 import AsyncHandler from 'express-async-handler';
-import puppeteer, { executablePath } from 'puppeteer'; // ✅ updated import
+import puppeteer from 'puppeteer'; // ✅ updated import
 import { parseResult } from '../utils/parseResult.js';
 import AppError from '../utils/AppError.js';
 
