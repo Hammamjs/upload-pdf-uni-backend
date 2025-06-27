@@ -8,7 +8,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "postinstall": "puppeteer install",
+    "postinstall": "PUPPETEER_SKIP_DOWNLOAD=false PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer npx puppeteer install --force",
     "build": "node app",
     "dev": "node --watch app"
   },
