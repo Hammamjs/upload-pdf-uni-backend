@@ -1,9 +1,9 @@
-const { join } = require('path');
+// puppeteer.config.mjs
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-/**
- * @type {import("puppeteer").Configuration}
- */
-module.exports = {
-  // Changes the cache location for Puppeteer.
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default {
   cacheDirectory: join(__dirname, '.cache', 'puppeteer'),
 };
