@@ -9,7 +9,6 @@ export const studentResult = AsyncHandler(async (req, res, next) => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
