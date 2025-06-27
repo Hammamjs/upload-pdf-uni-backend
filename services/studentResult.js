@@ -2,51 +2,49 @@ import AsyncHandler from 'express-async-handler';
 import puppeteer from 'puppeteer'; // ✅ updated import
 import { parseResult } from '../utils/parseResult.js';
 import AppError from '../utils/AppError.js';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 export const studentResult = AsyncHandler(async (req, res, next) => {
   const studentIdx = req.student.studentIdx;
-
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-      ],
+    // 1. First GET request to get any required cookies/tokens
+    const getResponse = await axios.get(process.env.UNIVERSITY_URI);
+    const cookies = getResponse.headers['set-cookie'] || [];
+
+    // 2. Prepare form submission
+    const formData = new URLSearchParams();
+    formData.append('studentID', studentIdx);
+
+    // 3. POST request with form data
+    const postResponse = await axios.post(
+      process.env.UNIVERSITY_URI + '?type=HOME',
+      formData.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Cookie: cookies.join('; '),
+          Referer: process.env.UNIVERSITY_URI,
+        },
+        maxRedirects: 0, // Handle redirects manually if needed
+      }
+    );
+
+    // 4. Parse the response with Cheerio
+    const $ = cheerio.load(postResponse.data);
+    const resultText = $('div#page').text() || $('body').text();
+
+    // 5. Process and return the result
+    res.status(200).json({
+      message: 'Result retrieved',
+      res: parseResult(resultText),
     });
-
-    const page = await browser.newPage();
-    await page.goto(process.env.UNIVERSITY_URI, {
-      waitUntil: 'domcontentloaded',
-      timeout: 0,
-    });
-
-    await page.waitForSelector('input[name="studentID"]', {
-      visible: true,
-      timeout: 10000,
-    });
-    await page.type('input[name="studentID"]', studentIdx);
-
-    await page.waitForSelector('button[name=""]', {
-      visible: true,
-      timeout: 10000,
-    });
-    await page.click('button[name=""]');
-
-    await page.waitForSelector('div#page', {
-      visible: true,
-      timeout: 20000,
-    });
-
-    const result = await page.evaluate(() => document.body.innerText);
-    await browser.close();
-
-    res
-      .status(200)
-      .json({ message: 'Result retrieved', res: parseResult(result) });
   } catch (err) {
-    console.error('Puppeteer error:', err); // Add this for better debugging
-    return next(new AppError(400, 'Something went wrong'));
+    console.error('Error:', {
+      message: err.message,
+      response: err.response?.data,
+      status: err.response?.status,
+    });
+    return next(new AppError(400, 'Failed to retrieve result'));
   }
 });
