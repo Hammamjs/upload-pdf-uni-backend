@@ -35,17 +35,35 @@ export const CreateAccount = AsyncHandler(async (req, res, next) => {
 });
 
 export const updateStudent = AsyncHandler(async (req, res, next) => {
-  const body = { ...req.body };
+  const body = req.body;
   // Exclude pass
   delete body.password;
 
+  let id; // if request send to update user data or user role
+
+  if (body.role) {
+    id = body.id;
+  } else {
+    // if user to update his personal data not the role
+    id = req.student.id;
+  }
+
+  if (req.student.role === 'SuperAdmin' && body.id === req.student.id) {
+    return next(new AppError(400, 'SuperAdmin cannot change his role'));
+  }
+
+  console.log('ID: ', id);
+  console.log('body: ', body);
+
   const student = await Student.findOneAndUpdate(
-    { _id: req.student.id },
-    body,
+    { _id: id },
+    { ...body },
     {
       new: true,
     }
   );
+
+  console.log(student);
 
   if (!student) return next(new AppError(404, 'Student account not exist'));
 
@@ -73,8 +91,6 @@ export const activateAccount = AsyncHandler(async (req, res, next) => {
     { active: true },
     { new: true }
   );
-
-  console.log(student);
 
   if (!student) return next(new AppError(400, 'Student Email not exist'));
   res.status(200).json({ message: 'Account is activated' });

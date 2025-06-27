@@ -32,38 +32,36 @@ export const register = AsyncHandler(async (req, res, next) => {
     email,
     password,
   });
-  const accessToken = jwt.sign(
-    { role: student.role, id: student._id, studentIdx: student.studentIdx },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '15min' }
-  );
-  const refreshToken = jwt.sign(
-    {
-      role: student.role,
-      id: student._id,
-      studentIdx: student.studentIdx,
-      department: student.department,
-      year: student.year,
-      semester: student.semester,
-    },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '1d' }
-  );
+  // const accessToken = jwt.sign(
+  //   { role: student.role, id: student._id, studentIdx: student.studentIdx },
+  //   process.env.ACCESS_TOKEN_SECRET,
+  //   { expiresIn: '15min' }
+  // );
+  // const refreshToken = jwt.sign(
+  //   {
+  //     role: student.role,
+  //     id: student._id,
+  //     studentIdx: student.studentIdx,
+  //     department: student.department,
+  //     year: student.year,
+  //     semester: student.semester,
+  //   },
+  //   process.env.REFRESH_TOKEN_SECRET,
+  //   { expiresIn: '1d' }
+  // );
 
-  student.refreshToken = refreshToken;
-  await student.save();
+  // student.refreshToken = refreshToken;
+  // await student.save();
 
-  res.cookie('jwt', refreshToken, {
-    secure: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    sameSite: 'none',
-  });
+  // res.cookie('jwt', refreshToken, {
+  //   secure: true,
+  //   maxAge: 24 * 60 * 60 * 1000,
+  //   httpOnly: true,
+  //   sameSite: 'none',
+  // });
 
   res.status(201).json({
     message: 'Registeration compelete',
-    student: studentInfo(student),
-    accessToken,
   });
 });
 
