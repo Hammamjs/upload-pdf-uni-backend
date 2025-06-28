@@ -8,7 +8,6 @@ import {
 import { verifyJwt } from '../middleware/verifyJwt.js';
 import { allowedTo } from '../config/allowedTo.js';
 import { ROLES_LIST } from '../config/ROLES_LIST.js';
-import { upload } from '../middleware/uploadFile.js';
 
 const router = Router();
 
