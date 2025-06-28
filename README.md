@@ -1,6 +1,6 @@
 # UOFB PROJECT
 
-This is an open source project and the purpose of this project that built for computer science collage specially to store there there files to restore it when they needed
+This is an open source project and the purpose of this project that built for computer science collage specially to store there files to restore it when they needed
 
 ### ⚔️ Built with
 
